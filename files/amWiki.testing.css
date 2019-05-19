@@ -21,6 +21,8 @@
 .testing-send input:hover{background:#f4f5f9;}
 .testing-send-url{width:75%;color:#000;border:none;border-bottom:1px solid #ccc;}
 .testing-send-type{margin-left:10px;height:30px;line-height:30px;}
+.testing-data-type{margin-left:10px;height:30px;line-height:30px;}
+.testing-callback-content{margin-left:0px;height:80px;width:640px;}
 .testing-send h3{padding:25px 0 0;font-weight:normal;line-height:30px;font-size:14px;}
 .testing-param{width:100%;margin-bottom:10px;}
 .testing-params li{list-style:none;padding:10px 0 13px;}

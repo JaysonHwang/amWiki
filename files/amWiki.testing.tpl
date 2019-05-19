@@ -9,6 +9,10 @@
             <option value="PUT">PUT</option>
             <option value="DELETE">DELETE</option>
         </select>
+        <select class="testing-data-type" id="testingDataType" title="数据类型">
+            <option value="text">text</option>
+            <option value="json">json</option>
+        </select>
         <h3>参数列表：</h3>
         <ul class="testing-params" id="testingParam"></ul>
         <script id="template:formList" type="text/html">
@@ -47,6 +51,10 @@
                 </div>
             </div>
         </div>
+        <h3>成功回调：(response) => {/*do stuff*/}</h3>
+        <textarea class="testing-callback-content" id="testingOnSuccessContent" type="text" title="成功回调" ></textarea>
+        <h3>失败回调：(xhr, textStatus)=>{/*do stuff*/}</h3>
+        <textarea class="testing-callback-content" id="testingOnErrorContent" type="text" title="失败回调" ></textarea>
     </div>
     <h2>响应内容<small id="testingDuration"></small>
         <svg id="testingLoading">

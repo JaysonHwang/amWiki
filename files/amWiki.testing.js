@@ -2,7 +2,7 @@
  * amWiki Web端 - 简单 ajax 测试模块
  * @author Tevin
  *
- * @notice 仅当页面存在“请求地址”、“请求类型”、“请求参数”三个h3标题时触发，且参数列表表格顺序不能打乱
+ * @notice 仅当页面存在“请求地址”、“请求类型”、“数据类型”、“请求参数”四个h3标题时触发，且参数列表表格顺序不能打乱
  */
 
 (function (win, $) {
@@ -45,8 +45,14 @@
             method: '',
             //请求参数
             params: [],
+            //数据类型
+            dataType: '',
             //全局参数
-            paramGlobal: []
+            paramGlobal: [],
+            // 请求成功回调
+            onSuccess: '',
+            // 请求失败回调
+            onError: '',
         };
         this._useGlobalParam();
         this._bindPanelCtrl();
@@ -59,7 +65,7 @@
      */
     Testing.prototype.crawlContent = function () {
         var that = this;
-        var testingReqState = [false, false, false];
+        var testingReqState = [false, false, false, false, false, false];
         this.$e.testingShow.removeClass('show');
         this.$e.view.find('h3').each(function () {
             var $this = $(this);
@@ -90,8 +96,22 @@
                 }
                 testingReqState[1] = true;
             }
+            //抓取数据类型
+            else if (name == '数据类型' && !testingReqState[2]) {
+                that._request.dataType = $.trim($this.next().text()).toLowerCase();
+                var methodState = false;
+                ['text', 'json'].forEach(function (value, index) {
+                    if (that._request.dataType == value) {
+                        methodState = true;
+                    }
+                });
+                if (!methodState) {
+                    that._request.dataType = 'text';
+                }
+                testingReqState[2] = true;
+            }
             //抓取请求参数
-            else if (name == '请求参数' && !testingReqState[2]) {
+            else if (name == '请求参数' && !testingReqState[3]) {
                 //清空参数列表
                 that._request.params.length = 0;
                 //不存在table直接无参数，存在table时开始解析
@@ -127,15 +147,25 @@
                         }
                     });
                 }
-                testingReqState[2] = true;
+                testingReqState[3] = true;
+            }
+            //抓取回调函数
+            else if (name == '成功回调' && !testingReqState[4]) {
+                that._request.onSuccess = $.trim($this.next().text());
+                testingReqState[4] = true;
+            }
+            //抓取失败函数
+            else if (name == '失败回调' && !testingReqState[5]) {
+                that._request.onError = $.trim($this.next().text());
+                testingReqState[5] = true;
             }
         });
-        if (testingReqState[0] && testingReqState[1] && testingReqState[2]) {
+        if (testingReqState[0] && testingReqState[1] && testingReqState[2] && testingReqState[3]) {
             this._initPanel();
         } else {
             this._offPanel();
         }
-        testingReqState = [false, false, false];
+        testingReqState = [false, false, false, false, false, false];
     };
 
     /**
@@ -151,10 +181,19 @@
         this._request.url = '';
         this._request.method = '';
         this._request.params = [];
+        this._request.dataType = '';
+        this._request.onSuccess = '';
+        this._request.onError = '';
         //清空请求地址
         $('#testingSendUrl').val('');
+        //清空成功回调函数
+        $('#testingOnSuccessContent').val('');
+        //清空失败回调函数
+        $('#testingOnErrorContent').val('');
         //还原请求类型
         $('#testingSendType').find('option[value="POST"]').prop('selected', true);
+        //还原dataType
+        $('#testingDataType').find('option[value="text"]').prop('selected', true);
         //清空参数列表
         this.$e.testingParam.html('');
         //重置iframe
@@ -169,8 +208,14 @@
         this.$e.testingShow.addClass('show');
         //填充请求地址
         $('#testingSendUrl').val(this._request.url);
+        //填充请求成功回调函数
+        $('#testingOnSuccessContent').val(this._request.onSuccess);
+        //填充请求失败回调函数
+        $('#testingOnErrorContent').val(this._request.onError);
         //填充请求类型
         $('#testingSendType').find('option[value="' + this._request.method + '"]').prop('selected', true);
+        //填充dataType
+        $('#testingDataType').find('option[value="' + this._request.dataType + '"]').prop('selected', true);
         //清空现有参数列表
         this.$e.testingParam.html('');
         //填充参数列表
@@ -263,9 +308,21 @@
         $('#testingSendUrl').on('change', function () {
             that._request.url = $(this).val();
         });
+        //填充成功回调内容
+        $('#testingOnSuccessContent').on('change', function () {
+            that._request.onSuccess = $(this).val();
+        });
+        //填充失败回调内容
+        $('#testingOnErrorContent').on('change', function () {
+            that._request.onError = $(this).val();
+        });
         //填充请求类型
         $('#testingSendType').on('change', function () {
             that._request.method = $(this).find("option:selected").val();
+        });
+        //填充dataType
+        $('#testingDataType').on('change', function () {
+            that._request.dataType = $(this).find("option:selected").val();
         });
         //清空所有普通参数的值
         $('#testingBtnReset').on('click', function () {
@@ -389,28 +446,45 @@
             frame.contentWindow.location.reload();  //刷新iframe以便重新输出内容
             $loading.show();
             var startTime = Date.now();
+            var dataType = that._request.dataType || 'text';
+            var contentType = dataType === 'text' ? 'application/x-www-form-urlencoded;charset=UTF-8' : 'application/json; charset=utf-8';
+            var reqParam = dataType === 'text' ? realParam : (Object.keys(realParam).length ? JSON.stringify(realParam): null);
             $.ajax({
                 type: that._request.method,
                 url: that._request.url,
-                data: realParam,
-                dataType: 'text',
-                success: function (data) {
+                data: reqParam,
+                dataType: dataType,
+                contentType: contentType,
+                success: function (response) {
+                    try{
+                        eval(`${that._request.onSuccess}`)
+                    }catch (error) {
+                        console.error(error);
+                    }
                     $loading.hide();
                     $duration.text('耗时：' + parseFloat(Date.now() - startTime).toLocaleString() + ' ms');
                     var $frameBody = $(frame.contentWindow.document).find('body');
                     $frameBody.css('wordBreak', 'break-all');
-                    if (/^\s*\{[\s\S]*\}\s*$/.test(data)) {
+                    if(dataType === 'json'){
+                        response = JSON.stringify(response);
+                    }
+                    if (/^\s*\{[\s\S]*\}\s*$/.test(response)) {
                         $frameBody[0].innerHTML = '<pre style="white-space:pre-wrap;word-break:break-all;"><pre>';
                         //json格式化输出
-                        $frameBody.find('pre').text(win.tools.formatJson(data));
+                        $frameBody.find('pre').text(win.tools.formatJson(response));
                     } else {
-                        $frameBody[0].innerHTML = data.replace(/<!(doctype|DOCTYPE)\s+(html|HTML)>/, '');
+                        $frameBody[0].innerHTML = response.replace(/<!(doctype|DOCTYPE)\s+(html|HTML)>/, '');
                     }
                     setTimeout(function () {
                         $(frame).height($frameBody.height());
                     }, 100);
                 },
                 error: function (xhr, textStatus) {
+                    try{
+                        eval(`${that._request.onError}`)
+                    }catch (error) {
+                        console.error(error);
+                    }
                     $loading.hide();
                     $duration.text('耗时：' + parseFloat(Date.now() - startTime).toLocaleString() + ' ms');
                     var $frameBody = $(frame.contentWindow.document).find('body');
