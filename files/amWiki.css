@@ -20,8 +20,8 @@
 .markdown-body input[type="checkbox"]{margin-right:5px;vertical-align:middle;cursor:pointer;}
 .markdown-body input[type="checkbox"]+label{vertical-align:middle;margin-right:7px;cursor:pointer;}
 .markdown-body pre{position:relative;}
-.markdown-body pre code{padding-top:0.15em;padding-bottom:0.15em;margin:0 1px;font-size:90%;color:#000;word-wrap:break-word;white-space:pre-wrap;}
-.markdown-body pre code.hljs{color:#333;}
+.markdown-body pre code{padding-top:0.15em;padding-bottom:0.15em;margin:0 1px;font-size:90%;color:white;word-wrap:break-word;white-space:pre-wrap;}
+.markdown-body pre code.hljs{color:#e6db74;}
 .markdown-body .hljs-string{color:#183691;}
 .markdown-body .hljs-built_in{color:#0086b3;}
 .markdown-body code.lang-flow svg{margin-top:-10px;}
@@ -269,8 +269,3 @@ footer .signature{position:absolute;right:20px;bottom:8px;color:#999;}
     footer .signature a{color:#aaa;}
 
 }
-
-
-
-
-
