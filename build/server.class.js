@@ -68,7 +68,7 @@ class Server {
                 .on('error', (e) => {
                     if (e.syscall === 'listen' && e.code === 'EADDRINUSE') {
                         if (portCount < 12) {
-                            console.warn('端口 ' + this._port + ' 已被其他程序占用，尝试端口号+1，监听端口 ' + (this._port + 1));
+                            console.warn('端口 ' + this._port + ' 已被其他程序占用，尝试端口号+1，监听端口 ' + (parseInt(this._port) + 1));
                             portCount++;
                             this._nodeServer.listen(++this._port);
                         } else {

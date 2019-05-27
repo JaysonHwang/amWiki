@@ -20,7 +20,7 @@
 .markdown-body input[type="checkbox"]{margin-right:5px;vertical-align:middle;cursor:pointer;}
 .markdown-body input[type="checkbox"]+label{vertical-align:middle;margin-right:7px;cursor:pointer;}
 .markdown-body pre{position:relative;}
-.markdown-body pre code{padding-top:0.15em;padding-bottom:0.15em;margin:0 1px;font-size:90%;color:white;word-wrap:break-word;white-space:pre-wrap;}
+.markdown-body pre code{padding-top:0.15em;padding-bottom:0.15em;margin:0 1px;font-size:90%;font-weight:400;color:#708090;word-wrap:break-word;white-space:pre-wrap;}
 .markdown-body pre code.hljs{color:#e6db74;}
 .markdown-body .hljs-string{color:#183691;}
 .markdown-body .hljs-built_in{color:#0086b3;}

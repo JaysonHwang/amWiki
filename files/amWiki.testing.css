@@ -57,7 +57,7 @@
 .testing-global-param .btn{padding:0 25px 25px;text-align:right;}
 .testing-global-param .btn button{height:30px;padding:0 10px;line-height:28px;}
 .testing-global-param .btn .save{padding:0 20px;}
-.testing-global-working{float:left;position:relative;left:2px;width:100px;height:30px;background:#272822;border:#b8b8b8 1px solid;border-radius:1px;-webkit-transition-duration:.3s;-moz-transition-duration:.3s;-ms-transition-duration:.3s;transition-duration:.3s;cursor:pointer;}
+.testing-global-working{float:left;position:relative;left:2px;width:100px;height:30px;background:#f7f7f7;border:#b8b8b8 1px solid;border-radius:1px;-webkit-transition-duration:.3s;-moz-transition-duration:.3s;-ms-transition-duration:.3s;transition-duration:.3s;cursor:pointer;}
 .testing-global-working.off{background:#d1d1d1;}
 .testing-global-working i{position:absolute;top:0;right:0;height:100%;width:50%;background:#fff;border-radius:1px;box-shadow:1px 0px 4px rgba(0,0,0,.3);-webkit-transition-duration:.3s;-moz-transition-duration:.3s;-ms-transition-duration:.3s;transition-duration:.3s;}
 .testing-global-working.off i{right:50%;box-shadow:-1px 0px 4px rgba(0,0,0,.3);}
